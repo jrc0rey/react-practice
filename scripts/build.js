@@ -91,21 +91,73 @@ var destination = document.querySelector('#container'
 );var LifeComponent = React.createClass({
 	displayName: 'LifeComponent',
 
+	getDefaultProps: function () {
+		console.log('getting default props');
+	},
+
 	getInitialState: function () {
 		return {
 			count: 0
 		};
 	},
+
+	componentWillMount: function () {
+		console.log(this.state);
+		console.log(this.props);
+		console.log('component is mounting');
+	},
+
 	increment: function () {
 		this.setState({
 			count: this.state.count + 1
 		});
 	},
+
 	render: function () {
 		return React.createElement(
 			'button',
 			{ onClick: this.increment },
 			this.state.count
+		);
+	},
+
+	componentDidMount: function () {
+		console.log('component has rendered');
+		this.interval = setInterval(this.increment, 1000);
+	},
+
+	componentWillUnmount: function () {
+		clearInterval(this.interval);
+		console.log('component unmounted');
+	}
+});
+
+var LifecycleContainer = React.createClass({
+	displayName: 'LifecycleContainer',
+
+	mount: function () {
+		ReactDOM.render(React.createElement(LifeComponent, null), document.getElementById('renderHere'));
+	},
+	unmount: function () {
+		ReactDOM.unmountComponentAtNode(document.getElementById('renderHere'));
+	},
+
+	render: function () {
+		console.log('Lifecycle container rendered');
+		return React.createElement(
+			'div',
+			null,
+			React.createElement(
+				'button',
+				{ onClick: this.mount },
+				'Mount'
+			),
+			React.createElement(
+				'button',
+				{ onClick: this.unmount },
+				'Unmount'
+			),
+			React.createElement('div', { id: 'renderHere' })
 		);
 	}
 });
@@ -113,7 +165,7 @@ var destination = document.querySelector('#container'
 ReactDOM.render(React.createElement(
 	'div',
 	null,
-	React.createElement(LifeComponent, null)
+	React.createElement(LifecycleContainer, null)
 ), destination);
 
 },{"react":182,"react-dom":31}],2:[function(require,module,exports){

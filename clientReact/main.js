@@ -90,19 +90,68 @@ var destination = document.querySelector('#container')
 // Lifecycle of Components
 
 var LifeComponent = React.createClass({
+	getDefaultProps: function(){
+		console.log('getting default props')
+	},
+	
 	getInitialState: function(){
 		return{
 			count: 0,
 		}
 	},
+	
+	componentWillMount: function(){
+		console.log(this.state)
+		console.log(this.props)
+		console.log('component is mounting')
+	},
+		
 	increment: function(){
 		this.setState({
 			count: this.state.count + 1
 		})
 	},
+	
 	render: function(){
 		return(
 			<button onClick={this.increment}>{this.state.count}</button>
+		)
+	},
+
+	componentDidMount: function(){
+		console.log('component has rendered')
+		this.interval = setInterval(this.increment, 1000)
+	},
+
+	componentWillUnmount: function(){
+		clearInterval(this.interval)
+		console.log('component unmounted')
+	}
+})
+
+var LifecycleContainer = React.createClass({
+	mount: function(){
+		ReactDOM.render(
+			<LifeComponent />,
+			document.getElementById('renderHere')
+
+		)
+	},
+	unmount: function(){
+		ReactDOM.unmountComponentAtNode(
+			document.getElementById('renderHere')
+		)
+	},
+	
+	render: function(){
+		console.log('Lifecycle container rendered')
+		return(
+		<div>
+			<button onClick={this.mount}>Mount</button>
+			<button onClick={this.unmount}>Unmount</button>
+			<div id="renderHere"></div>
+		</div>
+		
 		)
 	}
 })
@@ -111,11 +160,9 @@ var LifeComponent = React.createClass({
 
 
 
-
-
 ReactDOM.render(
 	<div>
-		<LifeComponent />
+		<LifecycleContainer />
 	</div>,
 	destination
 )
